@@ -164,6 +164,11 @@ img.large {
 .price {
   margin-bottom: 1rem;
   font-size: 2rem;
+  padding: 1rem;
+}
+
+.resultCardStatus {
+  padding: 1rem;
 }
 
 /* rating */
