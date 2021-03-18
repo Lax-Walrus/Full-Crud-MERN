@@ -1,13 +1,22 @@
 import { BrowserRouter, Link, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { signout } from "./actions/userActions";
 import cartSreen from "./screens/cartSreen";
 import homeScreen from "./screens/homeScreen";
 import productScreen from "./screens/productScreen";
 import SigninScreen from "./screens/signinScreen";
+import RegisterScreen from "./screens/registerScreen";
 
 function App() {
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
+  const userSignin = useSelector((state) => state.userSignin);
+  const { userInfo } = userSignin;
+  const dispatch = useDispatch();
+
+  const signoutHandler = () => {
+    dispatch(signout());
+  };
   return (
     <BrowserRouter>
       <div className="gridContainer">
@@ -24,13 +33,27 @@ function App() {
                 <span className="badge">{cartItems.length}</span>
               )}
             </Link>
-            <Link to="/signIn">Sign In</Link>
+            {userInfo ? (
+              <div className="dropdown">
+                <Link to="#">
+                  {userInfo.name} <i className="fa fa-caret-down"></i>
+                </Link>
+                <ul className="dropdown-content">
+                  <Link to="#signout" onClick={signoutHandler}>
+                    Sign out
+                  </Link>
+                </ul>
+              </div>
+            ) : (
+              <Link to="/signIn">Sign In</Link>
+            )}
           </div>
         </header>
         <main>
           <Route path="/cart/:id?" component={cartSreen}></Route>
           <Route path="/" component={homeScreen} exact></Route>
           <Route path="/signin" component={SigninScreen}></Route>
+          <Route path="/register" component={RegisterScreen}></Route>
           <Route path="/product/:id" component={productScreen}></Route>
         </main>
         <footer className="row center">all rights reserved</footer>
