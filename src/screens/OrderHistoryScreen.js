@@ -33,38 +33,30 @@ export default function OrderHistoryScreen(props) {
             </tr>
           </thead>
           <tbody>
-            {
-              (console.log(orders),
-              orders.map((order) => (
-                <tr key={order._id}>
-                  <td>{order._id}</td>
-                  <td>
-                    {
-                      (console.log(order.createdAt),
-                      order.paidAt.substring(0, 10))
-                    }
-                  </td>
-                  <td>{order.totalPrice}</td>
-                  <td>{order.isPaid ? order.paidAt.substring(0, 10) : "NO"}</td>
-                  <td>
-                    {order.isDelivered
-                      ? order.deliveredAt.substring(0, 10)
-                      : "NO "}
-                  </td>
-                  <td>
-                    <button
-                      type="button"
-                      className="small"
-                      onClick={() => {
-                        props.history.push(`/order/${order._id}`);
-                      }}
-                    >
-                      DETAILS
-                    </button>
-                  </td>
-                </tr>
-              )))
-            }
+            {orders.map((order) => (
+              <tr key={order._id}>
+                <td>{order._id}</td>
+                <td>{order.updatedAt.substring(0, 10)}</td>
+                <td>{order.totalPrice}</td>
+                <td>{order.isPaid ? order.paidAt.substring(0, 10) : "NO"}</td>
+                <td>
+                  {order.isDelivered
+                    ? order.deliveredAt.substring(0, 10)
+                    : "NO "}
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    className="small"
+                    onClick={() => {
+                      props.history.push(`/order/${order._id}`);
+                    }}
+                  >
+                    DETAILS
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       )}
