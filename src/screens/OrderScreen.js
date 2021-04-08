@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { detailsOrder, payOrder } from "../actions/orderActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
+import { ORDER_PAY_RESET } from "../constants/orderConstants";
 
 export default function OrderScreen(props) {
   const [sdkReady, setSdkReady] = useState(false);
@@ -34,6 +35,7 @@ export default function OrderScreen(props) {
       document.body.appendChild(script);
     };
     if (!order || successPay || (order && order._id !== orderId)) {
+      dispatch({ type: ORDER_PAY_RESET });
       dispatch(detailsOrder(orderId));
     } else {
       if (!order.isPaid) {
@@ -44,7 +46,7 @@ export default function OrderScreen(props) {
         }
       }
     }
-  }, [dispatch, order, orderId, setSdkReady]);
+  }, [dispatch, successPay, order, orderId, setSdkReady]);
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(order, paymentResult));
@@ -87,9 +89,9 @@ export default function OrderScreen(props) {
                 <p>
                   <strong> Method:</strong> {order.paymentMethod} <br />
                 </p>
-                {order.isDelivered ? (
+                {order.isPaid ? (
                   <MessageBox variant="success">
-                    Paid at {order.deliveredAt}{" "}
+                    Paid at {order.paidAt}{" "}
                   </MessageBox>
                 ) : (
                   <MessageBox variant="danger">Not Paid</MessageBox>
