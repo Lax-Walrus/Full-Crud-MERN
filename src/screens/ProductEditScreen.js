@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { detailsProduct } from "../actions/productActions";
+import { detailsProduct, updateProduct } from "../actions/productActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
+import { PRODUCT_UPDATE_RESET } from "../constants/productConstants";
 
 export default function ProductEditScreen(props) {
   const productId = props.match.params.id;
@@ -17,10 +18,21 @@ export default function ProductEditScreen(props) {
 
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
+
+  const productUpdate = useSelector((state) => state.productUpdate);
+  const {
+    loading: loadingUpdate,
+    error: errorupdate,
+    success: successUpdate,
+  } = productUpdate;
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!product || product._id !== productId) {
+    if (successUpdate) {
+      props.history.push("/productlist");
+    }
+    if (!product || product._id !== productId || successUpdate) {
+      dispatch({ type: PRODUCT_UPDATE_RESET });
       dispatch(detailsProduct(productId));
     } else {
       setName(product.name);
@@ -31,11 +43,23 @@ export default function ProductEditScreen(props) {
       setColor(product.color);
       setDescription(product.description);
     }
-  }, [product, dispatch, productId]);
+  }, [product, dispatch, productId, successUpdate, props.history]);
 
   const submitHandler = (e) => {
     e.preventDefault();
     // dispatch updated product
+    dispatch(
+      updateProduct({
+        _id: productId,
+        name,
+        price,
+        image,
+        category,
+        color,
+        countInStock,
+        description,
+      })
+    );
   };
 
   return (
@@ -45,6 +69,8 @@ export default function ProductEditScreen(props) {
           <h1> Edit Product {productId} </h1>
         </div>
 
+        {loadingUpdate && <LoadingBox></LoadingBox>}
+        {errorupdate && <MessageBox variant="danger">{errorupdate}</MessageBox>}
         {loading ? (
           <LoadingBox></LoadingBox>
         ) : error ? (
