@@ -11,7 +11,7 @@ export default function PrivateRoute({ component: Component, ...rest }) {
       <Route
         {...rest}
         render={(props) =>
-          userInfo && userInfo.isAdmin ? (
+          userInfo ? (
             <Component {...props}></Component>
           ) : (
             <Redirect to="signin" />

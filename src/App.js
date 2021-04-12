@@ -65,9 +65,8 @@ function App() {
 
             {userInfo && userInfo.isAdmin && (
               <div className="dropdown">
-                {" "}
+                <Link to="#admin"> Admin </Link>{" "}
                 <i className="fa fa-caret-down"></i>
-                <Link to="#admin"> Admin </Link>
                 <ul className="dropdown-content">
                   <li>
                     <Link to="/dashboard"> Dashboard </Link>

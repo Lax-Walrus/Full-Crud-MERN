@@ -26,14 +26,17 @@ export default function ProfileScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log(userDetails);
     if (!user) {
       dispatch({ type: USER_UPDATED_PROFILE_RESET });
       dispatch(detailsUser(userInfo._id));
     } else {
+      console.log(user.name);
       setName(user.name);
+
       setEmail(user.email);
     }
-  }, [dispatch, userInfo._id, user]);
+  }, [user, dispatch, userInfo._id]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -42,6 +45,7 @@ export default function ProfileScreen() {
     if (password !== confirm) {
       alert("Passwords do not match");
     } else {
+      console.log(user.name);
       dispatch(updateUserProfile({ userId: user._id, name, email, password }));
     }
   };
