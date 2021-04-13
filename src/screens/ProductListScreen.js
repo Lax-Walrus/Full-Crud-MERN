@@ -3,10 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { createProduct, listProducts } from "../actions/productActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
-import {
-  PRODUCT_CREATE_RESET,
-  PRODUCT_CREATE_SUCCESS,
-} from "../constants/productConstants";
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 export default function ProductListScreen(props) {
   const productList = useSelector((state) => state.productList);
