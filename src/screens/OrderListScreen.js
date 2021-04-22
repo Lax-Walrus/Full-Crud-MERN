@@ -7,10 +7,11 @@ import MessageBox from "../components/MessageBox";
 export default function OrderListScreen(props) {
   const orderList = useSelector((state) => state.orderList);
   const { loading, error, orders } = orderList;
-
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(listOrders);
+    dispatch(listOrders());
+    console.log(orderList);
   }, [dispatch]);
 
   const deleteHandler = (order) => {

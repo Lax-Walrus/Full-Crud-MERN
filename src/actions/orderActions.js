@@ -105,6 +105,7 @@ export const listOrderMine = () => async (dispatch, getState) => {
 
 export const listOrders = () => async (dispatch, getState) => {
   dispatch({ type: ORDER_LIST_REQUEST });
+
   const {
     userSignin: { userInfo },
   } = getState();
@@ -117,9 +118,10 @@ export const listOrders = () => async (dispatch, getState) => {
     dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
   } catch (error) {
     const message =
-      error.response && error.response.message
+      error.response && error.response.data.message
         ? error.response.data.message
         : error.message;
+
     dispatch({ type: ORDER_LIST_FAIL, payload: message });
   }
 };
