@@ -36,7 +36,7 @@ export default function ProfileScreen() {
 
       setEmail(user.email);
     }
-  }, [user, dispatch, userInfo._id]);
+  }, [user, dispatch, userInfo._id,userDetails]);
 
   const submitHandler = (e) => {
     e.preventDefault();

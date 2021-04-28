@@ -42,7 +42,7 @@ export default function ProductListScreen(props) {
     }
 
     dispatch(listProducts());
-  }, [dispatch, successDelete, createProduct, props.history, successCreate]);
+  }, [dispatch, successDelete, createProduct, props.history, successCreate,]);
 
   const deleteHandler = (product) => {
     if (window.confirm("Are you sure you want to delete this product")) {

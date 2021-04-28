@@ -12,7 +12,7 @@ export default function OrderListScreen(props) {
   useEffect(() => {
     dispatch(listOrders());
     console.log(orderList);
-  }, [dispatch]);
+  }, [dispatch, orderList]);
 
   const deleteHandler = (order) => {
     // delete function goes here
