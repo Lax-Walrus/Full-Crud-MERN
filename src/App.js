@@ -10,7 +10,7 @@ import ShippingAddressScreen from "./screens/ShippingAddressScreen";
 import PaymentMethodScreen from "./screens/paymentMethodScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 import OrderScreen from "./screens/OrderScreen";
-
+import UserListScreen from "./screens/UserListScreen";
 import OrderHistoryScreen from "./screens/OrderHistoryScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import PrivateRoute from "./components/PrivateRoute";
@@ -82,7 +82,7 @@ function App() {
                     <Link to="/orderlist"> Orders </Link>
                   </li>
                   <li>
-                    <Link to="/userlist"> Dashboard </Link>
+                    <Link to="/userlist"> Users </Link>
                   </li>
                 </ul>
               </div>
@@ -119,6 +119,8 @@ function App() {
             path="/productList"
             component={ProductListScreen}
           ></AdminRoute>
+
+          <AdminRoute path="/userList" component={UserListScreen}></AdminRoute>
         </main>
         <footer className="row center">all rights reserved</footer>
       </div>
