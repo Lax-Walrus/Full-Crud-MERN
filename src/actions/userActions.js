@@ -16,6 +16,9 @@ import {
   USER_LIST_REQUEST,
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
+  USER_DELETE_PROFILE_REQUEST,
+  USER_DELETE_PROFILE_SUCCESS,
+  USER_DELETE_PROFILE_FAIL,
 } from "../constants/userConstants";
 
 export const register = (name, email, password) => async (dispatch) => {
@@ -127,5 +130,27 @@ export const listUsers = () => async (dispatch, getState) => {
         : error.message;
 
     dispatch({ type: USER_LIST_FAIL, payload: message });
+  }
+};
+
+export const deleteUser = (userId) => async (dispatch, getState) => {
+  dispatch({ type: USER_DELETE_PROFILE_REQUEST, payload: userId });
+
+  try {
+    const {
+      userSignin: { userInfo },
+    } = getState();
+
+    const { data } = await Axios.delete(`/api/users/${userId}`, {
+      headers: { Authorization: `Bearer ${userInfo.token}` },
+    });
+    dispatch({ type: USER_DELETE_PROFILE_SUCCESS, payload: data });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+
+    dispatch({ type: USER_DELETE_PROFILE_FAIL, payload: message });
   }
 };
