@@ -85,6 +85,7 @@ button:hover {
 
 button.primary {
   background-color: #f0c040;
+  width: 100%;
 }
 
 button.block {
