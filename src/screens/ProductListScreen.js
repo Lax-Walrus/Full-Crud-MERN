@@ -13,8 +13,11 @@ import {
 } from "../constants/productConstants";
 
 export default function ProductListScreen(props) {
+  const sellerMode = props.match.path.indexOf("/seller") >= 0;
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
+  const userSignin = useSelector((state) => state.userSignin);
+  const { userInfo } = userSignin;
   const dispatch = useDispatch();
 
   const productCreate = useSelector((state) => state.productCreate);
@@ -41,8 +44,8 @@ export default function ProductListScreen(props) {
       dispatch({ type: PRODUCT_DELETE_RESET });
     }
 
-    dispatch(listProducts());
-  }, [dispatch, successDelete, createProduct, props.history, successCreate,]);
+    dispatch(listProducts({ seller: sellerMode ? userInfo._id : "" }));
+  }, [dispatch, successDelete, createProduct, props.history, successCreate]);
 
   const deleteHandler = (product) => {
     if (window.confirm("Are you sure you want to delete this product")) {
