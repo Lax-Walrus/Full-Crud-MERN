@@ -26,8 +26,14 @@ export default function Product(props) {
           )}
         </div>
       </div>
-
-      <div class="price">${product.price}</div>
+      <div className="row">
+        <div class="price">${product.price}</div>
+        <div>
+          <Link to={`/seller/${product.seller._id}`}>
+            {product.seller.seller.name}
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }
