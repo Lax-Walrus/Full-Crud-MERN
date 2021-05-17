@@ -69,8 +69,6 @@ button {
   font-family: Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8f8f8;
-  cursor: pointer;
 }
 button {
   background-color: #f8f8f8;
@@ -85,7 +83,6 @@ button:hover {
 
 button.primary {
   background-color: #f0c040;
-  width: 100%;
 }
 
 button.block {

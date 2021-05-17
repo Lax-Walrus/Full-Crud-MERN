@@ -36,14 +36,13 @@ export default function ProfileScreen() {
     } else {
       console.log(user.name);
       setName(user.name);
+      setEmail(user.email);
 
       if (user.seller) {
         setSellerName(user.seller.name);
         setSellerLogo(user.seller.logo);
         setSellerDescription(user.seller.description);
       }
-
-      setEmail(user.email);
     }
   }, [user, dispatch, userInfo._id]);
 
