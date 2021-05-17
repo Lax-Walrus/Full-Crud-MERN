@@ -23,8 +23,14 @@ import SellerRoute from "./components/SellerRoute";
 import SellerScreen from "./screens/SellerScreen";
 import SearchBox from "./components/SearchBox";
 import SearchScreen from "./screens/SearchScreen";
+import { useEffect, useState } from "react";
+import { listProductsCategories } from "./actions/productActions";
+import LoadingBox from "./components/LoadingBox";
+import MessageBox from "./components/MessageBox";
 
 function App() {
+  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+
   const cart = useSelector((state) => state.cart);
   const { cartItems } = cart;
   const userSignin = useSelector((state) => state.userSignin);
@@ -34,11 +40,30 @@ function App() {
   const signoutHandler = () => {
     dispatch(signout());
   };
+
+  const productCategoryList = useSelector((state) => state.productCategoryList);
+  const {
+    loading: loadingCategory,
+    error: errorCategory,
+    products: categories,
+  } = productCategoryList;
+
+  useEffect(() => {
+    dispatch(listProductsCategories());
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <div className="gridContainer">
         <header className="row">
           <div>
+            <button
+              type="button"
+              className="open-sidebar"
+              onClick={() => setSidebarIsOpen(true)}
+            >
+              <i className="fa fa-bars"></i>
+            </button>
             <Link className="brand" to="/">
               Da-Nile
             </Link>
@@ -116,6 +141,38 @@ function App() {
             )}
           </div>
         </header>
+
+        <aside className={sidebarIsOpen ? "open" : ""}>
+          <ul className="categories">
+            <li>
+              <strong>Categories</strong>
+              <button
+                onClick={() => setSidebarIsOpen(false)}
+                className="closeSideBar"
+                type="button"
+              >
+                <i className="fa fa-times"></i>
+              </button>
+            </li>
+            {loadingCategory ? (
+              <LoadingBox></LoadingBox>
+            ) : errorCategory ? (
+              <MessageBox variant="danger">{errorCategory}</MessageBox>
+            ) : (
+              categories.map((c) => (
+                <li key={c}>
+                  <Link
+                    to={`search/category/${c}`}
+                    onClick={() => setSidebarIsOpen(false)}
+                  >
+                    {c}
+                  </Link>
+                </li>
+              ))
+            )}
+          </ul>
+        </aside>
+
         <main>
           <Route path="/seller/:id" component={SellerScreen}></Route>
           <Route path="/cart/:id?" component={cartSreen}></Route>
@@ -135,6 +192,16 @@ function App() {
           <Route path="/order/:id" component={OrderScreen} exact></Route>
           <Route
             path="/search/name/:name?"
+            component={SearchScreen}
+            exact
+          ></Route>
+          <Route
+            path="/search/category/:category"
+            component={SearchScreen}
+            exact
+          ></Route>
+          <Route
+            path="/search/category/:category/name/:name"
             component={SearchScreen}
             exact
           ></Route>
