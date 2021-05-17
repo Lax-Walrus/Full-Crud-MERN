@@ -332,3 +332,15 @@ img.large {
 .carousel .slide img {
   max-width: 30rem;
 }
+
+/* search */
+.search button {
+  border-radius: 0 0.5rem 0.5rem 0;
+  border-right: 0.5rem;
+  border-left: none;
+}
+.search input {
+  border-radius: 0.5rem 0 0 0.5rem;
+  border-right: none;
+  border-left: 0.5rem;
+}
