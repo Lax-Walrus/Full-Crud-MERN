@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 import { listProductsCategories } from "./actions/productActions";
 import LoadingBox from "./components/LoadingBox";
 import MessageBox from "./components/MessageBox";
+import MapScreen from "./screens/MapScreen";
 
 function App() {
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
@@ -214,6 +215,7 @@ function App() {
             path="/profile"
             component={ProfileScreen}
           ></PrivateRoute>
+          <PrivateRoute path="/map" component={MapScreen}></PrivateRoute>
 
           <AdminRoute
             path="/orderlist"
