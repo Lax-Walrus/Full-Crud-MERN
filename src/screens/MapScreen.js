@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 const libs = ["places"];
 const defaultLocation = { lat: 48.7519, lng: 122.4787 };
 
-export default function MapScreen() {
+export default function MapScreen(props) {
   const [googleApiKey, setGoogleApiKey] = useState("");
   const [center, setCenter] = useState(defaultLocation);
   const [location, setLocation] = useState(center);
@@ -25,12 +25,13 @@ export default function MapScreen() {
   useEffect(() => {
     const fetch = async () => {
       const { data } = await Axios("/api/config/google");
-      console.log(data);
       setGoogleApiKey(data);
       getUserCurrentLoaction();
     };
     fetch();
   }, []);
+
+  console.log(googleApiKey);
 
   const onLoad = (map) => {
     mapRef.current = map;
@@ -72,6 +73,7 @@ export default function MapScreen() {
       });
 
       alert("location selected successfully!");
+      props.history.push("/shipping");
     } else {
       alert("Please enter your address!");
     }
@@ -96,7 +98,7 @@ export default function MapScreen() {
 
   return googleApiKey ? (
     <div className="full-container">
-      <LoadScript libraries={libs} googleMapsApiKey={googleApiKey}>
+      <LoadScript googleMapsApiKey={googleApiKey} libraries={libs}>
         <GoogleMap
           id="sample-map"
           mapContainerStyle={{ height: "100%", width: "100%" }}
@@ -104,22 +106,20 @@ export default function MapScreen() {
           zoom={15}
           onLoad={onLoad}
           onIdle={onIdle}
-        ></GoogleMap>
-        <StandaloneSearchBox
-          onLoad={onLoadPlaces}
-          onPlacesChanged={onPlacesChanged}
         >
-          <div className="map-input-box">
-            <input type="text" placeholder="Enter Your Address">
-              <button
-                type="button"
-                className="Primary"
-                onClick={onConfirm}
-              ></button>
-            </input>
-          </div>
-        </StandaloneSearchBox>
-        <Marker position={location} onLoad={onMarkerLoad}></Marker>
+          <StandaloneSearchBox
+            onLoad={onLoadPlaces}
+            onPlacesChanged={onPlacesChanged}
+          >
+            <div className="map-input-box">
+              <input type="text" placeholder="Enter Your Address"></input>
+              <button type="button" className="Primary" onClick={onConfirm}>
+                Confirm
+              </button>
+            </div>
+          </StandaloneSearchBox>
+          <Marker position={location} onLoad={onMarkerLoad}></Marker>
+        </GoogleMap>
       </LoadScript>
     </div>
   ) : (
