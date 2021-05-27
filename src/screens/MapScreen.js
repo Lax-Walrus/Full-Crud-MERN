@@ -11,7 +11,7 @@ import { USER_ADDRESS_MAP_CONFIRM } from "../constants/userConstants";
 import { useDispatch } from "react-redux";
 
 const libs = ["places"];
-const defaultLocation = { lat: 48.7519, lng: 122.4787 };
+const defaultLocation = { lat: 45.516, lng: -73.56 };
 
 export default function MapScreen(props) {
   const [googleApiKey, setGoogleApiKey] = useState("");
@@ -26,40 +26,37 @@ export default function MapScreen(props) {
     const fetch = async () => {
       const { data } = await Axios("/api/config/google");
       setGoogleApiKey(data);
-      getUserCurrentLoaction();
+      getUserCurrentLocation();
     };
     fetch();
   }, []);
 
-  console.log(googleApiKey);
-
   const onLoad = (map) => {
     mapRef.current = map;
   };
+
   const onMarkerLoad = (marker) => {
     markerRef.current = marker;
   };
-
   const onLoadPlaces = (place) => {
     placeRef.current = place;
   };
-
   const onIdle = () => {
-    setLocation({ lat: mapRef.current.center.lat() });
-    setLocation({ lng: mapRef.current.center.lng() });
+    setLocation({
+      lat: mapRef.current.center.lat(),
+      lng: mapRef.current.center.lng(),
+    });
   };
-
   const onPlacesChanged = () => {
     const place = placeRef.current.getPlaces()[0].geometry.location;
     setCenter({ lat: place.lat(), lng: place.lng() });
+    setLocation({ lat: place.lat(), lng: place.lng() });
   };
-
   const dispatch = useDispatch();
-
   const onConfirm = () => {
     const places = placeRef.current.getPlaces();
     if (places && places.length === 1) {
-      //   dispatch select action
+      // dispatch select action
       dispatch({
         type: USER_ADDRESS_MAP_CONFIRM,
         payload: {
@@ -71,17 +68,16 @@ export default function MapScreen(props) {
           googleAddressId: places[0].id,
         },
       });
-
-      alert("location selected successfully!");
+      alert("location selected successfully.");
       props.history.push("/shipping");
     } else {
-      alert("Please enter your address!");
+      alert("Please enter your address");
     }
   };
 
-  const getUserCurrentLoaction = () => {
+  const getUserCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by this browser");
+      alert("Geolocation os not supported by this browser");
     } else {
       navigator.geolocation.getCurrentPosition((position) => {
         setCenter({
@@ -96,12 +92,17 @@ export default function MapScreen(props) {
     }
   };
 
+  const containerStyle = {
+    width: "100vw",
+    height: "100vw",
+  };
+
   return googleApiKey ? (
     <div className="full-container">
-      <LoadScript googleMapsApiKey={googleApiKey} libraries={libs}>
+      <LoadScript libraries={libs} googleMapsApiKey={googleApiKey}>
         <GoogleMap
           id="sample-map"
-          mapContainerStyle={{ height: "100%", width: "100%" }}
+          mapContainerStyle={containerStyle}
           center={center}
           zoom={15}
           onLoad={onLoad}
@@ -112,8 +113,8 @@ export default function MapScreen(props) {
             onPlacesChanged={onPlacesChanged}
           >
             <div className="map-input-box">
-              <input type="text" placeholder="Enter Your Address"></input>
-              <button type="button" className="Primary" onClick={onConfirm}>
+              <input type="text" placeholder="Enter your address"></input>
+              <button type="button" className="primary" onClick={onConfirm}>
                 Confirm
               </button>
             </div>
