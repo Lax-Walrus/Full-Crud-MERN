@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import socketIOClient from "socket.io-client";
-import { isSeller } from "../../../estorebackendfix/utils";
+import MessageBox from "../components/MessageBox";
 
 let allUsers = [];
 let allMessages = [];
@@ -26,55 +27,92 @@ export default function SupportScreen() {
       uiMessagesRef.current.scrollBy({
         top: uiMessagesRef.current.clientHeight,
         left: 0,
-        behavior: smooth,
+        behavior: "smooth",
       });
 
       if (!socket) {
         const sk = socketIOClient(ENDPOINT);
         setSocket(sk);
-      }
 
-      sk.emit("onLogin", {
-        _id: userInfo._id,
-        name: userInfo.name,
-        isAdmin: userInfo.isAdmin,
-      });
-      sk.on("message", (data) => {
-        if (allSelectedUsers._id === data._id) {
-          allMessages = [...allMessages, data];
-        } else {
-          const existUser = allUsers.find((user) => user._id === data._id);
+        sk.emit("onLogin", {
+          _id: userInfo._id,
+          name: userInfo.name,
+          isAdmin: userInfo.isAdmin,
+        });
+        sk.on("message", (data) => {
+          if (allSelectedUsers._id === data._id) {
+            allMessages = [...allMessages, data];
+          } else {
+            const existUser = allUsers.find((user) => user._id === data._id);
+            if (existUser) {
+              allUsers = allUsers.map((user) =>
+                user._id === existUser ? { ...user, unread: true } : user
+              );
+              setUsers(allUsers);
+            }
+          }
+          setMessages(allMessages);
+        });
+        sk.on("updateUser", (updatedUser) => {
+          const existUser = allUsers.find(
+            (user) => user._id === updatedUser._id
+          );
           if (existUser) {
             allUsers = allUsers.map((user) =>
-              user._id === existUser ? { ...user, unread: true } : user
+              user._id === existUser._id ? updatedUser : user
             );
             setUsers(allUsers);
+          } else {
+            allUsers = [...allUsers, updatedUser];
+            setUsers(allUsers);
           }
-        }
-        setMessages(allMessages);
-      });
-      sk.on("updateUser", (updateUser) => {
-        const existUser = allUsers.find((user) => user._id === updatedUser._id);
-        if (existUser) {
-          allUsers = allUsers.map((user) =>
-            user._id === existUser._id ? updatedUser : user
-          );
+        });
+        sk.on("listUsers", (updatedUsers) => {
+          allUsers = updatedUsers;
           setUsers(allUsers);
-        } else {
-          allUsers = [...allUsers, updatedUser];
-          setUsers(allUsers);
-        }
-      });
-      sk.on("listUsers", (updatedUsers) => {
-        allUsers = updatedUsers;
-        setUsers(allUsers);
-      });
-      sk.on("selectUser", (user) => {
-        allMessages - user.messages;
-        setMessages(allMessages);
-      });
+        });
+        sk.on("selectUser", (user) => {
+          allMessages = user.messages;
+          setMessages(allMessages);
+        });
+      }
     }
   }, [messages, socket, users]);
+
+  const selectUser = (user) => {
+    allSelectedUsers = user;
+    setSelectedUser(allSelectedUsers);
+    const existUser = allUsers.find((x) => x._id === user._id);
+    if (existUser) {
+      allUsers = allUsers.map((x) =>
+        x._id === existUser._id ? { ...x, unread: false } : x
+      );
+      setUsers(allUsers);
+    }
+    socket.emit("onUserSelected", user);
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (!messageBody.trim()) {
+      alert("No text entered, no message sent");
+    } else {
+      allMessages = [
+        ...allMessages,
+        { body: messageBody, name: userInfo.name },
+      ];
+      setMessages(allMessages);
+      setMessageBody("");
+      setTimeout(() => {
+        socket.emit("onMessage", {
+          body: messageBody,
+          name: userInfo.name,
+          isAdmin: userInfo.isAdmin,
+          _id: selectedUser._id,
+        });
+      }, 1000);
+    }
+  };
 
   return (
     <div className="row top full-container">
